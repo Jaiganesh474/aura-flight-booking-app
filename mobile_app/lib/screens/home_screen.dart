@@ -1,3 +1,4 @@
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
@@ -157,103 +158,160 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 28),
             // Search card inputs
-            Card(
-              color: const Color(0xFF1E293B),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextField(
-                      controller: _sourceController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: 'Origin City / Code',
-                        prefixIcon: Icon(Icons.flight_takeoff),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _destinationController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: 'Destination City / Code',
-                        prefixIcon: Icon(Icons.flight_land),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Date picker field
-                    InkWell(
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: _selectedDate,
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime.now().add(const Duration(days: 365)),
-                        );
-                        if (picked != null) {
-                          setState(() => _selectedDate = picked);
-                        }
-                      },
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Departure Date',
-                          prefixIcon: Icon(Icons.calendar_today_outlined),
+            Tilt3DCard(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E293B).withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: Colors.white12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.4),
+                          blurRadius: 24,
+                          offset: const Offset(0, 12),
                         ),
-                        child: Text(
-                          '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Cabin class dropdown
-                    DropdownButtonFormField<String>(
-                      value: _selectedCabin,
-                      dropdownColor: const Color(0xFF1E293B),
-                      decoration: const InputDecoration(
-                        labelText: 'Cabin Class',
-                        prefixIcon: Icon(Icons.airline_seat_recline_extra),
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: 'ECONOMY', child: Text('Economy Class')),
-                        DropdownMenuItem(value: 'PREMIUM_ECONOMY', child: Text('Premium Economy')),
-                        DropdownMenuItem(value: 'BUSINESS', child: Text('Business Class')),
-                        DropdownMenuItem(value: 'FIRST', child: Text('First Class')),
                       ],
-                      onChanged: (val) {
-                        if (val != null) setState(() => _selectedCabin = val);
-                      },
                     ),
-                    const SizedBox(height: 28),
-                    ElevatedButton(
-                      onPressed: () {
-                        provider.updateSearchQuery(
-                          _sourceController.text.trim(),
-                          _destinationController.text.trim(),
-                          _selectedDate.toString().split(' ').first,
-                          _selectedCabin,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const FlightResultsScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryAmber,
-                        foregroundColor: const Color(0xFF020617),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: const Text('Search Flight Routes', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                    )
-                  ],
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
+                          controller: _sourceController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            labelText: 'Origin City / Code',
+                            prefixIcon: Icon(Icons.flight_takeoff),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _destinationController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            labelText: 'Destination City / Code',
+                            prefixIcon: Icon(Icons.flight_land),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Date picker field
+                        InkWell(
+                          onTap: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: _selectedDate,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(const Duration(days: 365)),
+                            );
+                            if (picked != null) {
+                              setState(() => _selectedDate = picked);
+                            }
+                          },
+                          child: InputDecorator(
+                            decoration: const InputDecoration(
+                              labelText: 'Departure Date',
+                              prefixIcon: Icon(Icons.calendar_today_outlined),
+                            ),
+                            child: Text(
+                              '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Cabin class dropdown
+                        DropdownButtonFormField<String>(
+                          value: _selectedCabin,
+                          dropdownColor: const Color(0xFF1E293B),
+                          decoration: const InputDecoration(
+                            labelText: 'Cabin Class',
+                            prefixIcon: Icon(Icons.airline_seat_recline_extra),
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'ECONOMY', child: Text('Economy Class')),
+                            DropdownMenuItem(value: 'PREMIUM_ECONOMY', child: Text('Premium Economy')),
+                            DropdownMenuItem(value: 'BUSINESS', child: Text('Business Class')),
+                            DropdownMenuItem(value: 'FIRST', child: Text('First Class')),
+                          ],
+                          onChanged: (val) {
+                            if (val != null) setState(() => _selectedCabin = val);
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        ElevatedButton(
+                          onPressed: () {
+                            provider.updateSearchQuery(
+                              _sourceController.text.trim(),
+                              _destinationController.text.trim(),
+                              _selectedDate.toString().split(' ').first,
+                              _selectedCabin,
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const FlightResultsScreen()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryAmber,
+                            foregroundColor: const Color(0xFF020617),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: const Text('Search Flight Routes', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class Tilt3DCard extends StatefulWidget {
+  final Widget child;
+  const Tilt3DCard({Key? key, required this.child}) : super(key: key);
+
+  @override
+  State<Tilt3DCard> createState() => _Tilt3DCardState();
+}
+
+class _Tilt3DCardState extends State<Tilt3DCard> {
+  double _rotateX = 0.0;
+  double _rotateY = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onPanUpdate: (details) {
+        setState(() {
+          _rotateY += details.delta.dx * 0.002;
+          _rotateX -= details.delta.dy * 0.002;
+          _rotateX = _rotateX.clamp(-0.15, 0.15);
+          _rotateY = _rotateY.clamp(-0.15, 0.15);
+        });
+      },
+      onPanEnd: (_) {
+        setState(() {
+          _rotateX = 0.0;
+          _rotateY = 0.0;
+        });
+      },
+      child: Transform(
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.001) // Perspective depth
+          ..rotateX(_rotateX)
+          ..rotateY(_rotateY),
+        alignment: FractionalOffset.center,
+        child: widget.child,
       ),
     );
   }
