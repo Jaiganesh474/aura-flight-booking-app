@@ -28,7 +28,7 @@ interface AppContextType {
   selectedFlightId: number | null;
   setSelectedFlightId: (id: number | null) => void;
   selectedSeats: string[];
-  setSelectedSeats: (seats: string[]) => void;
+  setSelectedSeats: React.Dispatch<React.SetStateAction<string[]>>;
   theme: 'light' | 'dark';
   toggleTheme: () => void;
 }

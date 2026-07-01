@@ -16,8 +16,8 @@ interface Flight {
   id: number;
   flightNumber: string;
   baseFare: number;
-  sourceAirport: { city: string; code: string };
-  destinationAirport: { city: string; code: string };
+  sourceAirport: { city: string; code: string; name?: string };
+  destinationAirport: { city: string; code: string; name?: string };
   departureTime: string;
 }
 
