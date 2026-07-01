@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+target/
+dist/
+dist-ssr/
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE / System files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+*.log
+logs/
+
+# Java compilation outputs
+*.class
+*.jar
+*.war
+*.ear
+.mvn/
