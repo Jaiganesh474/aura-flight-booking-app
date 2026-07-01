@@ -40,7 +40,7 @@ class SuccessScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('PNR REFERENCE', style: TextStyle(color: Colors.grey, fontSize: 11)),
                           Text(
@@ -66,7 +66,7 @@ class SuccessScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             flight['sourceAirport']?['city'] ?? '',
@@ -80,7 +80,7 @@ class SuccessScreen extends StatelessWidget {
                       ),
                       const Divider(height: 24, color: Colors.white12),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('FLIGHT ROUTE'),
                           Text(

@@ -100,7 +100,7 @@ class _FlightResultsScreenState extends State<FlightResultsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.between,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         flight['airlineName'] ?? 'Aura Express',
@@ -114,7 +114,7 @@ class _FlightResultsScreenState extends State<FlightResultsScreen> {
                                   ),
                                   const Divider(height: 28, color: Colors.white12),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.between,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +147,7 @@ class _FlightResultsScreenState extends State<FlightResultsScreen> {
                                   ),
                                   const SizedBox(height: 20),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.between,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +161,7 @@ class _FlightResultsScreenState extends State<FlightResultsScreen> {
                                       ),
                                       Text(
                                         currencyFormatter.format(fare),
-                                        style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.black),
+                                        style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900),
                                       ),
                                     ],
                                   )

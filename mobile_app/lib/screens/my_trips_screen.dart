@@ -83,7 +83,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.between,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'PNR: ${booking['pnr'] ?? 'N/A'}',

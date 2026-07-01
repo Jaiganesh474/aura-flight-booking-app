@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Discover Your Next Flight', style: TextStyle(fontSize: 20, fontWeight: FontWeight.black, color: Colors.white)),
+                  const Text('Discover Your Next Flight', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white)),
                   const SizedBox(height: 6),
                   Text('Get modern recommendations and premium services instantly.', style: TextStyle(color: Colors.grey[400], fontSize: 13)),
                 ],

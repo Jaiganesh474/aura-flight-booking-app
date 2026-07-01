@@ -210,7 +210,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.between,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Fare Summary', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                                 Text('${provider.selectedSeats.length} Ticket(s)'),
@@ -218,7 +218,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             const Divider(height: 24),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.between,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Base Total'),
                                 Text(currencyFormatter.format(baseTotal)),
@@ -227,7 +227,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             if (_discount > 0) ...[
                               const SizedBox(height: 8),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.between,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Discount Applied', style: TextStyle(color: Colors.greenAccent)),
                                   Text('-${currencyFormatter.format(discountVal)}', style: const TextStyle(color: Colors.greenAccent)),
@@ -236,7 +236,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                             const Divider(height: 24),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.between,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Grand Total', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                                 Text(currencyFormatter.format(finalTotal), style: TextStyle(color: primaryAmber, fontSize: 20, fontWeight: FontWeight.bold)),

@@ -149,7 +149,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.between,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +163,7 @@ class _SeatSelectionScreenState extends State<SeatSelectionScreen> {
                                 ),
                                 Text(
                                   currencyFormatter.format(provider.selectedSeats.length * (_flightDetails?['baseFare'] ?? 0.0)),
-                                  style: TextStyle(color: primaryAmber, fontSize: 24, fontWeight: FontWeight.black),
+                                  style: TextStyle(color: primaryAmber, fontSize: 24, fontWeight: FontWeight.w900),
                                 ),
                               ],
                             ),
