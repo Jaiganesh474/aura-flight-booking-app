@@ -23,8 +23,8 @@ import ResetPassword from './pages/ResetPassword';
 
 function App() {
   return (
-    <AppProvider>
-      <Router>
+    <Router>
+      <AppProvider>
         <ScrollToTop />
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-gray-100 flex flex-col font-sans transition-colors duration-300 selection:bg-amber-500 selection:text-brand-900">
           <Navbar />
@@ -50,8 +50,8 @@ function App() {
           <AIChatbot />
           <Footer />
         </div>
-      </Router>
-    </AppProvider>
+      </AppProvider>
+    </Router>
   );
 }
 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
   id: number;
@@ -36,6 +37,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [selectedFlightId, setSelectedFlightId] = useState<number | null>(null);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
@@ -89,7 +91,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // 5 minutes = 300,000 ms
       timeoutId = window.setTimeout(() => {
         logout();
-        window.location.href = '/login?inactive=true';
+        navigate('/login?inactive=true');
       }, 5 * 60 * 1000);
     };
 
