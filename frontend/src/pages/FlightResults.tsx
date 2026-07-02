@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import api from '../services/api';
-import { Plane, AlertCircle, ArrowRight, Clock, Star, Sparkles, Filter, ArrowLeftRight, Calendar, MapPin, Search } from 'lucide-react';
+import { Plane, AlertCircle, ArrowRight, Clock, Star, Sparkles, Filter, ArrowLeftRight, Calendar, MapPin, Search, X } from 'lucide-react';
 
 interface Flight {
   id: number;
@@ -65,6 +65,7 @@ const FlightResults: React.FC = () => {
   const [fromSearchQuery, setFromSearchQuery] = useState('');
   const [toSearchQuery, setToSearchQuery] = useState('');
   const [isEditing, setIsEditing] = useState(!searchQuery.source || !searchQuery.destination);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const fromRef = useRef<HTMLDivElement>(null);
   const toRef = useRef<HTMLDivElement>(null);
@@ -417,67 +418,88 @@ const FlightResults: React.FC = () => {
         )}
       </div>
 
+      {/* Mobile Filter Button */}
+      <div className="lg:hidden w-full flex justify-end">
+        <button
+          onClick={() => setShowMobileFilters(true)}
+          className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs shadow transition-colors cursor-pointer"
+        >
+          <Filter className="h-4 w-4" /> Filters & Sort
+        </button>
+      </div>
+
       {/* Sidebar Filter Panel */}
-      <div className="glass-card rounded-2xl p-6 h-fit space-y-6 border border-slate-200 dark:border-white/5">
-        <div className="flex items-center gap-2 border-b border-slate-200 dark:border-white/10 pb-3">
-          <Filter className="h-4.5 w-4.5 text-amber-600 dark:text-amber-500" />
-          <h3 className="font-display font-bold text-sm text-slate-900 dark:text-white">Filters &amp; Sort</h3>
-        </div>
-
-        {/* Sort option */}
-        <div className="space-y-2.5">
-          <label className="text-xs font-semibold text-slate-500 dark:text-gray-400">Sort Flights By</label>
-          <div className="flex flex-col gap-2">
-            {[
-              { key: 'cheapest', label: 'Cheapest Fare' },
-              { key: 'fastest', label: 'Fastest Duration' },
-              { key: 'earliest', label: 'Earliest Departure' },
-            ].map(opt => (
-              <button
-                key={opt.key}
-                onClick={() => setSortKey(opt.key as any)}
-                className={`text-left text-xs px-3 py-2 rounded-lg border transition-all cursor-pointer ${
-                  sortKey === opt.key 
-                    ? 'border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold' 
-                    : 'border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950/40 text-slate-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-900/60'
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
+      <div className={`${showMobileFilters ? 'fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-end justify-center p-4' : 'hidden lg:block'} lg:relative lg:inset-auto lg:z-0 lg:bg-transparent lg:backdrop-blur-none lg:p-0 lg:flex-none`}>
+        <div className="glass-card rounded-3xl p-6 h-fit space-y-6 border border-slate-200 dark:border-white/5 w-full max-w-md max-h-[85vh] overflow-y-auto lg:max-h-none lg:overflow-visible text-left">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
+            <div className="flex items-center gap-2">
+              <Filter className="h-4.5 w-4.5 text-amber-600 dark:text-amber-500" />
+              <h3 className="font-display font-bold text-sm text-slate-900 dark:text-white">Filters &amp; Sort</h3>
+            </div>
+            {/* Close Button on mobile */}
+            <button
+              onClick={() => setShowMobileFilters(false)}
+              className="lg:hidden text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
-        </div>
 
-        {/* Airline Selector */}
-        <div className="space-y-2.5">
-          <label className="text-xs font-semibold text-slate-500 dark:text-gray-400">Select Airline</label>
-          <select
-            value={selectedAirline}
-            onChange={(e) => setSelectedAirline(e.target.value)}
-            className="w-full bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none"
-          >
-            <option value="ALL" className="text-slate-900">All Airlines</option>
-            <option value="Air India" className="text-slate-900">Air India</option>
-            <option value="IndiGo" className="text-slate-900">IndiGo</option>
-            <option value="Akasa Air" className="text-slate-900">Akasa Air</option>
-          </select>
-        </div>
-
-        {/* Price slider */}
-        <div className="space-y-2.5">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-gray-400">
-            <span>Price range</span>
-            <span className="text-amber-600 dark:text-amber-500">₹{priceRange}</span>
+          {/* Sort option */}
+          <div className="space-y-2.5">
+            <label className="text-xs font-semibold text-slate-500 dark:text-gray-400">Sort Flights By</label>
+            <div className="flex flex-col gap-2">
+              {[
+                { key: 'cheapest', label: 'Cheapest Fare' },
+                { key: 'fastest', label: 'Fastest Duration' },
+                { key: 'earliest', label: 'Earliest Departure' },
+              ].map(opt => (
+                <button
+                  key={opt.key}
+                  onClick={() => { setSortKey(opt.key as any); setShowMobileFilters(false); }}
+                  className={`text-left text-xs px-3 py-2 rounded-lg border transition-all cursor-pointer ${
+                    sortKey === opt.key 
+                      ? 'border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold' 
+                      : 'border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950/40 text-slate-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-slate-900/60'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <input
-            type="range"
-            min="3000"
-            max="100000"
-            step="1000"
-            value={priceRange}
-            onChange={(e) => setPriceRange(Number(e.target.value))}
-            className="w-full accent-amber-500"
-          />
+
+          {/* Airline Selector */}
+          <div className="space-y-2.5">
+            <label className="text-xs font-semibold text-slate-500 dark:text-gray-400">Select Airline</label>
+            <select
+              value={selectedAirline}
+              onChange={(e) => { setSelectedAirline(e.target.value); setShowMobileFilters(false); }}
+              className="w-full bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none"
+            >
+              <option value="ALL" className="text-slate-900">All Airlines</option>
+              <option value="Air India" className="text-slate-900">Air India</option>
+              <option value="IndiGo" className="text-slate-900">IndiGo</option>
+              <option value="Akasa Air" className="text-slate-900">Akasa Air</option>
+            </select>
+          </div>
+
+          {/* Price slider */}
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-gray-400">
+              <span>Price range</span>
+              <span className="text-amber-600 dark:text-amber-500">₹{priceRange}</span>
+            </div>
+            <input
+              type="range"
+              min="3000"
+              max="100000"
+              step="1000"
+              value={priceRange}
+              onChange={(e) => setPriceRange(Number(e.target.value))}
+              className="w-full accent-amber-500"
+            />
+          </div>
         </div>
       </div>
 
@@ -591,7 +613,7 @@ const FlightResults: React.FC = () => {
                   </div>
 
                   {/* Route timing details */}
-                  <div className="flex items-center justify-between gap-8 flex-1 w-full max-w-sm">
+                  <div className="flex items-center justify-between gap-4 sm:gap-8 flex-1 w-full max-w-md">
                     {/* Departure */}
                     <div className="text-center md:text-left flex-1">
                       <p className="text-lg font-bold text-slate-900 dark:text-white leading-none">

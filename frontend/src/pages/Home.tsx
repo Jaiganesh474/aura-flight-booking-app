@@ -164,7 +164,7 @@ const Home: React.FC = () => {
     <div className="flex-1 w-full pb-16 space-y-12 text-slate-800 dark:text-gray-100">
       {/* Hero Banner Area */}
       <div 
-        className="relative h-[480px] w-full flex items-center justify-center bg-cover bg-center"
+        className="relative h-[320px] md:h-[480px] w-full flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: `linear-gradient(rgba(3, 7, 18, 0.4), rgba(3, 7, 18, 0.9)), url('/airline_hero_bg.png')` }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 dark:from-slate-950 via-slate-950/20 to-transparent"></div>
@@ -173,20 +173,20 @@ const Home: React.FC = () => {
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-semibold text-amber-400">
             <Sparkles className="h-3.5 w-3.5" /> Luxury Reimagined
           </span>
-          <h1 className="font-display text-4xl md:text-6xl font-bold tracking-tight text-white leading-none">
+          <h1 className="font-display text-3xl md:text-6xl font-bold tracking-tight text-white leading-none">
             Escape to Your Next <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-600">
               Dream Destination
             </span>
           </h1>
-          <p className="max-w-xl mx-auto text-sm md:text-base text-gray-300">
+          <p className="max-w-xl mx-auto text-xs md:text-base text-gray-300">
             Search scheduled premium flights across tier-1 airports with automated seat map customizers.
           </p>
         </div>
       </div>
 
       {/* Main Console Section */}
-      <div className="max-w-6xl mx-auto px-6 -mt-28 relative z-20 space-y-6">
+      <div className="max-w-6xl mx-auto px-6 -mt-16 md:-mt-28 relative z-20 space-y-6">
 
         {/* Standard Search Panel */}
         <form onSubmit={handleStandardSearch} className="glass-card rounded-3xl p-6 md:p-8 space-y-6 border border-slate-200 dark:border-white/10 shadow-2xl">

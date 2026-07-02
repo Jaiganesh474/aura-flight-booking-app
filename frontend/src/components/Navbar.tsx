@@ -4,7 +4,7 @@ import { useApp } from '../context/AppContext';
 import {
   LogOut, User as UserIcon, LayoutDashboard, Briefcase, Sun, Moon,
   AlertTriangle, Sparkles, Settings, Key, Trash2, Smartphone, Mail,
-  ShieldAlert, Lock, X, ShieldX, UserCheck, Plane, Mic
+  ShieldAlert, Lock, X, ShieldX, UserCheck, Plane, Mic, Menu
 } from 'lucide-react';
 import api from '../services/api';
 
@@ -15,6 +15,7 @@ const Navbar: React.FC = () => {
   const [smartQuery, setSmartQuery] = useState('');
   const [smartSearching, setSmartSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // AI Suggestions states
   const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -534,8 +535,133 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
           )}
+
+          {/* Hamburger Menu Toggle */}
+          <button
+            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            className="md:hidden glass-light p-2 rounded-xl text-slate-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-500 transition-all cursor-pointer border border-slate-200 dark:border-white/5"
+            title="Menu"
+          >
+            {showMobileMenu ? <X className="h-4.5 w-4.5" /> : <Menu className="h-4.5 w-4.5" />}
+          </button>
         </div>
       </nav>
+
+      {/* Mobile Menu Drawer */}
+      {showMobileMenu && (
+        <div className="md:hidden fixed inset-x-0 top-[73px] bottom-0 z-[90] bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-white/10 p-6 flex flex-col gap-4 animate-in slide-in-from-top-4 duration-200 max-h-[calc(100vh-73px)] overflow-y-auto">
+            {/* AI Smart Search on Mobile */}
+            <div className="w-full relative mt-2">
+              <form onSubmit={(e) => { handleSmartSearchSubmit(e); setShowMobileMenu(false); }} className="w-full relative">
+                <input
+                  type="text"
+                  value={smartQuery}
+                  onChange={(e) => setSmartQuery(e.target.value)}
+                  placeholder="🔍 Search 'Chennai to Mumbai under 6000'..."
+                  disabled={smartSearching}
+                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-full pl-4 pr-16 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-amber-500/80 transition-colors"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={startVoiceRecognition}
+                    className={`${isListening ? 'text-rose-500 animate-pulse bg-rose-500/10 p-1 rounded-full' : 'text-slate-400 hover:text-amber-500'} transition-colors cursor-pointer`}
+                  >
+                    <Mic className="h-3.5 w-3.5" />
+                  </button>
+                  <button type="submit" className="text-slate-400 hover:text-amber-500 transition-colors cursor-pointer">
+                    <Sparkles className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div className="border-t border-slate-100 dark:border-white/5 my-1" />
+
+            <Link
+              to="/search"
+              onClick={() => setShowMobileMenu(false)}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-amber-500/10 hover:text-amber-500 text-slate-700 dark:text-gray-300 transition-colors font-medium text-sm"
+            >
+              <Plane className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+              <span>Search Flights</span>
+            </Link>
+
+            {user && user.role === 'ROLE_AIRLINE_ADMIN' && (
+              <Link
+                to="/admin"
+                onClick={() => setShowMobileMenu(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-amber-500/10 hover:text-amber-500 text-slate-700 dark:text-gray-300 transition-colors font-medium text-sm"
+              >
+                <LayoutDashboard className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+                <span>Admin Console</span>
+              </Link>
+            )}
+
+            {user ? (
+              <>
+                <Link
+                  to="/profile"
+                  onClick={() => setShowMobileMenu(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-amber-500/10 hover:text-amber-500 text-slate-700 dark:text-gray-300 transition-colors font-medium text-sm"
+                >
+                  <UserIcon className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+                  <span>My Profile</span>
+                </Link>
+                <Link
+                  to="/my-trips"
+                  onClick={() => setShowMobileMenu(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-amber-500/10 hover:text-amber-500 text-slate-700 dark:text-gray-300 transition-colors font-medium text-sm"
+                >
+                  <Briefcase className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+                  <span>My Trips</span>
+                </Link>
+                <button
+                  onClick={() => {
+                    setShowMobileMenu(false);
+                    setShowSettingsModal(true);
+                    setActiveTab('info');
+                    setSettingsMessage({ type: '', text: '' });
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-amber-500/10 hover:text-amber-500 text-slate-700 dark:text-gray-300 transition-colors font-medium text-sm text-left cursor-pointer"
+                >
+                  <Settings className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+                  <span>Account Settings</span>
+                </button>
+                <div className="border-t border-slate-100 dark:border-white/5 my-1" />
+                <button
+                  onClick={() => {
+                    setShowMobileMenu(false);
+                    handleLogoutClick();
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 w-full rounded-xl hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 transition-colors font-medium text-sm text-left cursor-pointer"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <div className="flex flex-col gap-2 pt-2">
+                <Link
+                  to="/login"
+                  onClick={() => setShowMobileMenu(false)}
+                  className="w-full text-center py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-gray-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setShowMobileMenu(false)}
+                  className="w-full text-center py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs transition-colors shadow-md shadow-amber-500/10"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Confirmation Sign Out Modal */}
       {showConfirm && (

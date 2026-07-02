@@ -149,7 +149,7 @@ const SeatSelection: React.FC = () => {
       </div>
 
       {/* Interactive fuselage container */}
-      <div className="lg:col-span-2 glass-card rounded-3xl p-6 md:p-8 flex flex-col items-center border border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden">
+      <div className="lg:col-span-2 glass-card rounded-3xl p-4 sm:p-6 md:p-8 flex flex-col items-center border border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden">
         
         {/* Airplane Nose simulation */}
         <div className="w-48 h-16 rounded-t-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-900/50 relative flex items-center justify-center mb-10">
@@ -168,12 +168,12 @@ const SeatSelection: React.FC = () => {
         {/* Seats Grid */}
         <div className="space-y-4 w-full max-w-sm">
           {/* Columns identifiers */}
-          <div className="grid grid-cols-8 gap-2 text-center text-xs font-bold text-slate-500">
+          <div className="grid grid-cols-8 gap-1 sm:gap-2 text-center text-xs font-bold text-slate-500">
             <span></span>
             <span>A</span>
             <span>B</span>
             <span>C</span>
-            <span className="text-[9px] text-amber-600 dark:text-amber-500/80 font-semibold tracking-wider font-mono">AISLE</span>
+            <span className="text-[8px] sm:text-[9px] text-amber-600 dark:text-amber-500/80 font-semibold tracking-wider font-mono">AISLE</span>
             <span>D</span>
             <span>E</span>
             <span>F</span>
@@ -181,7 +181,7 @@ const SeatSelection: React.FC = () => {
 
           {rowNumbers.map(rowNum => {
             return (
-              <div key={rowNum} className="grid grid-cols-8 gap-2 items-center">
+              <div key={rowNum} className="grid grid-cols-8 gap-1 sm:gap-2 items-center">
                 <span className="text-center text-[10px] font-bold text-slate-500">{rowNum}</span>
                 {['A', 'B', 'C'].map(col => {
                   const seatCode = rowNum + col;
@@ -192,7 +192,7 @@ const SeatSelection: React.FC = () => {
                       key={seatCode}
                       disabled={seatObj.status !== 'AVAILABLE'}
                       onClick={() => handleSeatClick(seatObj)}
-                      className={`h-8 w-8 rounded-lg border text-[9px] font-bold transition-all flex items-center justify-center cursor-pointer ${getSeatColor(seatObj)}`}
+                      className={`h-7 w-7 sm:h-8 sm:w-8 rounded-lg border text-[9px] font-bold transition-all flex items-center justify-center cursor-pointer ${getSeatColor(seatObj)}`}
                     >
                       {seatCode}
                     </button>
@@ -210,7 +210,7 @@ const SeatSelection: React.FC = () => {
                       key={seatCode}
                       disabled={seatObj.status !== 'AVAILABLE'}
                       onClick={() => handleSeatClick(seatObj)}
-                      className={`h-8 w-8 rounded-lg border text-[9px] font-bold transition-all flex items-center justify-center cursor-pointer ${getSeatColor(seatObj)}`}
+                      className={`h-7 w-7 sm:h-8 sm:w-8 rounded-lg border text-[9px] font-bold transition-all flex items-center justify-center cursor-pointer ${getSeatColor(seatObj)}`}
                     >
                       {seatCode}
                     </button>
