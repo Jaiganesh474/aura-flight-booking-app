@@ -53,10 +53,20 @@ public class EmailService {
             helper.setText(htmlBody, true);
 
             if (ticketPdf != null) {
-                helper.addAttachment("Ticket-" + pnr + ".pdf", new ByteArrayResource(ticketPdf));
+                helper.addAttachment("Ticket-" + pnr + ".pdf", new ByteArrayResource(ticketPdf) {
+                    @Override
+                    public String getFilename() {
+                        return "Ticket-" + pnr + ".pdf";
+                    }
+                });
             }
             if (invoicePdf != null) {
-                helper.addAttachment("Invoice-" + pnr + ".pdf", new ByteArrayResource(invoicePdf));
+                helper.addAttachment("Invoice-" + pnr + ".pdf", new ByteArrayResource(invoicePdf) {
+                    @Override
+                    public String getFilename() {
+                        return "Invoice-" + pnr + ".pdf";
+                    }
+                });
             }
 
             mailSender.send(message);
