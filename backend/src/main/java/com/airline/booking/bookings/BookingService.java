@@ -195,7 +195,7 @@ public class BookingService {
         byte[] invoicePdf = pdfGenerationService.generateInvoicePdf(booking);
 
         // Send confirmation email with PDF attachments
-        emailService.sendBookingConfirmation(user.getEmail(), booking, ticketPdf, invoicePdf);
+        emailService.sendBookingConfirmation(user.getEmail(), booking.getId(), ticketPdf, invoicePdf);
 
         return booking;
     }
@@ -279,7 +279,7 @@ public class BookingService {
         Booking saved = bookingRepository.save(booking);
 
         // Send Brevo cancellation email
-        emailService.sendBookingCancellation(booking.getUser().getEmail(), saved);
+        emailService.sendBookingCancellation(booking.getUser().getEmail(), saved.getId());
 
         return saved;
     }

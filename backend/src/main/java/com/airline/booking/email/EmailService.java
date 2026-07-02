@@ -1,7 +1,9 @@
 package com.airline.booking.email;
 
 import com.airline.booking.bookings.Booking;
+import com.airline.booking.bookings.BookingRepository;
 import com.airline.booking.passengers.Passenger;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +22,9 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Value("${app.email.from}")
     private String fromEmail;
@@ -61,35 +66,38 @@ public class EmailService {
     }
 
     private String wrap(String content) {
+        String logoUrl = (frontendUrl != null ? frontendUrl : "http://localhost:5173") + "/airline_logo.png";
         return """
             <!DOCTYPE html>
             <html><head>
             <meta charset="UTF-8"/>
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <style>
-              body { font-family: Arial, sans-serif; background: #ffffff; margin: 0; padding: 10px; color: #333333; }
-              .sys-gen-notice { font-size: 11px; color: #444444; border-bottom: 1px solid #cccccc; padding-bottom: 8px; margin-bottom: 12px; }
-              .container { max-width: 800px; margin: 0 auto; border: 1px solid #dddddd; padding: 15px; }
-              .header { text-align: left; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-bottom: 15px; }
-              .header h1 { color: #0056b3; font-size: 24px; margin: 0; display: inline-block; vertical-align: middle; }
-              .header-subtitle { float: right; font-size: 13px; font-weight: bold; color: #666666; margin-top: 8px; }
-              .alert-banner { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 10px 15px; font-size: 13px; font-weight: bold; margin-bottom: 15px; border-radius: 4px; line-height: 1.5; }
-              .alert-banner-red { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 10px 15px; font-size: 13px; font-weight: bold; margin-bottom: 15px; border-radius: 4px; line-height: 1.5; }
-              .section-title { font-size: 14px; font-weight: bold; color: #0056b3; margin: 15px 0 6px 0; border-bottom: 1px solid #0056b3; padding-bottom: 3px; }
-              .info-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-              .info-table td { border: 1px solid #dddddd; padding: 8px; font-size: 12px; }
-              .info-label { background: #f8f9fa; font-weight: bold; width: 20%; color: #444444; }
-              .info-value { width: 30%; color: #000000; }
+              body { font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }
+              .sys-gen-notice { font-size: 11px; color: #64748b; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 16px; text-align: center; }
+              .container { max-width: 680px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); }
+              .header { background: #0f172a; padding: 24px; text-align: left; border-bottom: 3px solid #f59e0b; }
+              .header img { height: 40px; vertical-align: middle; margin-right: 12px; border-radius: 8px; }
+              .header h1 { color: #ffffff; font-size: 20px; font-weight: 800; margin: 0; display: inline-block; vertical-align: middle; letter-spacing: 1px; }
+              .header-subtitle { float: right; font-size: 12px; font-weight: 600; color: #f59e0b; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+              .body-content { padding: 24px; }
+              .alert-banner { background: #fef3c7; border: 1px solid #fde68a; color: #92400e; padding: 12px 16px; font-size: 13px; font-weight: 500; margin-bottom: 20px; border-radius: 8px; line-height: 1.5; }
+              .alert-banner-red { background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; padding: 12px 16px; font-size: 13px; font-weight: 500; margin-bottom: 20px; border-radius: 8px; line-height: 1.5; }
+              .section-title { font-size: 14px; font-weight: 700; color: #0f172a; margin: 20px 0 10px 0; border-left: 3px solid #f59e0b; padding-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+              .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+              .info-table td { border: 1px solid #e2e8f0; padding: 10px 12px; font-size: 12px; }
+              .info-label { background: #f8fafc; font-weight: bold; width: 25%; color: #475569; }
+              .info-value { width: 25%; color: #0f172a; }
               .highlight { color: #d97706; font-weight: bold; }
-              .details-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-              .details-table th { background: #e9ecef; border: 1px solid #dddddd; padding: 8px; font-size: 12px; font-weight: bold; text-align: left; color: #333; }
-              .details-table td { border: 1px solid #dddddd; padding: 8px; font-size: 12px; }
-              .btn { display: inline-block; background: #0056b3; color: white; padding: 8px 18px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: bold; margin: 10px 0; }
-              .footer-section { margin-top: 25px; border-top: 1px solid #eeeeee; padding-top: 15px; }
-              .footer-title { font-size: 13px; font-weight: bold; color: #0056b3; margin-bottom: 5px; }
-              .footer-list { font-size: 11px; color: #555555; line-height: 1.6; margin: 0 0 15px 0; padding-left: 20px; }
-              .eco-friendly { color: #28a745; font-size: 12px; font-weight: bold; margin: 15px 0; text-align: center; }
-              .signature { font-size: 12px; color: #444444; margin-top: 15px; line-height: 1.5; }
+              .details-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+              .details-table th { background: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px 12px; font-size: 12px; font-weight: 700; text-align: left; color: #475569; }
+              .details-table td { border: 1px solid #e2e8f0; padding: 10px 12px; font-size: 12px; color: #0f172a; }
+              .btn { display: inline-block; background: #f59e0b; color: #0f172a !important; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: bold; margin: 12px 0; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2); }
+              .footer-section { margin-top: 28px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+              .footer-title { font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+              .footer-list { font-size: 11px; color: #64748b; line-height: 1.6; margin: 0 0 16px 0; padding-left: 16px; }
+              .eco-friendly { color: #16a34a; font-size: 11px; font-weight: 600; margin: 20px 0; text-align: center; }
+              .signature { font-size: 12px; color: #475569; margin-top: 20px; line-height: 1.5; }
             </style>
             </head><body>
             <div class="sys-gen-notice">
@@ -97,11 +105,14 @@ public class EmailService {
             </div>
             <div class="container">
               <div class="header">
-                <h1>AURA TRAVEL AGENCIES</h1>
-                <div class="header-subtitle">Aura Airways Booking</div>
+                <img src="%s" alt="Logo"/>
+                <h1>AURA AIRWAYS</h1>
+                <div class="header-subtitle">Flight Booking</div>
                 <div style="clear:both;"></div>
               </div>
-            """ + content + """
+              <div class="body-content">
+            """.formatted(logoUrl) + content + """
+              </div>
             </div>
             </body></html>
             """;
@@ -131,7 +142,10 @@ public class EmailService {
     // ─── Booking Confirmation ──────────────────────────────────────────────────
 
     @Async
-    public void sendBookingConfirmation(String to, Booking booking, byte[] ticketPdf, byte[] invoicePdf) {
+    @Transactional(readOnly = true)
+    public void sendBookingConfirmation(String to, Long bookingId, byte[] ticketPdf, byte[] invoicePdf) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found: " + bookingId));
         String passengerRows = "";
         int idx = 1;
         for (Passenger p : booking.getPassengers()) {
@@ -296,7 +310,10 @@ public class EmailService {
     // ─── Booking Cancellation ──────────────────────────────────────────────────
 
     @Async
-    public void sendBookingCancellation(String to, Booking booking) {
+    @Transactional(readOnly = true)
+    public void sendBookingCancellation(String to, Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found: " + bookingId));
         String dep = booking.getFlight().getDepartureTime().format(DT_FMT);
         String arr = booking.getFlight().getArrivalTime().format(DT_FMT);
 
