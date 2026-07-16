@@ -32,6 +32,18 @@ The database structure is seeded dynamically at launch:
 
 ---
 
+## Future Roadmap: True AI + ML Flight Recommendation System
+
+While the current application utilizes a robust rule-based recommendation engine powered by generative AI (Google Gemini), the future roadmap includes transitioning to a **Machine Learning-driven Personalized Ranking System**. 
+
+### Implementation Stages:
+1. **Data Collection & Preprocessing**: Tracking user interactions (searches, clicks, bookings, cancellations) across the React frontend to build a comprehensive historical dataset.
+2. **Feature Engineering**: Extracting key behavioral features such as preferred departure times, price sensitivity, cabin class preferences, and airline loyalty.
+3. **Model Training (Random Forest)**: We plan to use a **Random Forest** algorithm for personalized flight ranking. It is highly effective for this tabular dataset as it captures non-linear user patterns (e.g., users who prefer cheap flights but only on mornings) and ranks flights based on their probability of being booked.
+4. **Microservice Integration**: A Python (FastAPI/Flask) microservice will host the trained Scikit-learn model, communicating with the Spring Boot backend to predict booking probabilities and sort flights dynamically for the active user.
+
+---
+
 ## Tech Stack
 
 ### Backend

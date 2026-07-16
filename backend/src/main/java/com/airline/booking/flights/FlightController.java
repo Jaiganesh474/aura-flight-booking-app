@@ -26,11 +26,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/flights")
 @CrossOrigin(origins = "*")
 public class FlightController {
+
+    private static final Logger logger = LoggerFactory.getLogger(FlightController.class);
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private FlightRepository flightRepository;
@@ -65,7 +77,8 @@ public class FlightController {
                     active.add(f);
                 }
             }
-            return ResponseEntity.ok(active);
+            List<Flight> rankedFlights = rankFlightsUsingML(active);
+            return ResponseEntity.ok(rankedFlights);
         }
         
         LocalDateTime startOfDay = date.atStartOfDay();
@@ -81,7 +94,55 @@ public class FlightController {
                 active.add(f);
             }
         }
-        return ResponseEntity.ok(active);
+        List<Flight> rankedFlights = rankFlightsUsingML(active);
+        return ResponseEntity.ok(rankedFlights);
+    }
+
+    private List<Flight> rankFlightsUsingML(List<Flight> flights) {
+        if (flights == null || flights.isEmpty()) {
+            return flights;
+        }
+        try {
+            String mlServiceUrl = "http://localhost:5000/rank_flights";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("flights", flights);
+
+            String requestBody = objectMapper.writeValueAsString(payload);
+            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(mlServiceUrl, entity, String.class);
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                JsonNode rankedFlightsNode = root.path("ranked_flights");
+                if (rankedFlightsNode.isArray()) {
+                    // Note: In a production app, we would parse the JSON back to Flight objects
+                    // or parse out the mlScores and sort the existing list. 
+                    // For simplicity, we just sort the existing list using the order returned.
+                    
+                    // We extract IDs in ranked order
+                    List<Long> rankedIds = new ArrayList<>();
+                    for (JsonNode fNode : rankedFlightsNode) {
+                        rankedIds.add(fNode.path("id").asLong());
+                    }
+                    
+                    // Sort our 'flights' list according to the rankedIds
+                    flights.sort((f1, f2) -> {
+                        int idx1 = rankedIds.indexOf(f1.getId());
+                        int idx2 = rankedIds.indexOf(f2.getId());
+                        if (idx1 == -1) idx1 = Integer.MAX_VALUE;
+                        if (idx2 == -1) idx2 = Integer.MAX_VALUE;
+                        return Integer.compare(idx1, idx2);
+                    });
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to reach ML service for flight ranking. Falling back to default order. Error: {}", e.getMessage());
+        }
+        return flights;
     }
 
     @GetMapping("/details/{id}")
